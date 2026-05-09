@@ -91,9 +91,9 @@ export default async function Header() {
               </Button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <Button variant="primary" className="rounded-full px-6">
+              {/* <Button variant="primary" className="rounded-full px-6">
                 Get Started
-              </Button>
+              </Button> */}
             </SignUpButton>
           </SignedOut>
         </div>

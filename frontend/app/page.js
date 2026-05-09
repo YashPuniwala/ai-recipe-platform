@@ -44,7 +44,7 @@ export default async function LandingPage() {
                 Save money, reduce waste, and eat better tonight.
               </p>
 
-              <Link href="/dashboard">
+              {/* <Link href="/dashboard">
                 <Button
                   size="xl"
                   variant="primary"
@@ -52,7 +52,7 @@ export default async function LandingPage() {
                 >
                   Start Cooking Free <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
-              </Link>
+              </Link> */}
 
               <p className="mt-6 text-sm text-stone-500">
                 <span className="font-bold text-stone-900">10k+ cooks</span>{" "}

@@ -11,7 +11,9 @@ function clamp(n, min, max) {
 
 function formatIngredients(ingredients = []) {
   return ingredients
-    .map((ing) => `${ing.amount ? `${ing.amount} ` : ""}${ing.item || ""}`.trim())
+    .map((ing) =>
+      `${ing.amount ? `${ing.amount} ` : ""}${ing.item || ""}`.trim(),
+    )
     .filter(Boolean)
     .join(", ");
 }
@@ -20,7 +22,7 @@ function extractDurationSeconds(text) {
   if (!text) return null;
   // Examples: "10 minutes", "1 min", "30 seconds", "2 hours"
   const m = text.match(
-    /\b(\d{1,3})\s*(hours?|hrs?|hr|minutes?|mins?|min|seconds?|secs?|sec)\b/i
+    /\b(\d{1,3})\s*(hours?|hrs?|hr|minutes?|mins?|min|seconds?|secs?|sec)\b/i,
   );
   if (!m) return null;
   const value = Number(m[1]);
@@ -36,7 +38,8 @@ function formatTime(totalSeconds) {
   const hh = Math.floor(s / 3600);
   const mm = Math.floor((s % 3600) / 60);
   const ss = s % 60;
-  if (hh > 0) return `${hh}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+  if (hh > 0)
+    return `${hh}:${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
   return `${mm}:${String(ss).padStart(2, "0")}`;
 }
 
@@ -62,14 +65,14 @@ function getSuggestionChips(stepText, ingredients) {
   const timeMention =
     stepText &&
     stepText.match(
-      /\b(\d{1,3})\s*(hours?|hrs?|hr|minutes?|mins?|min|seconds?|secs?|sec)\b/i
+      /\b(\d{1,3})\s*(hours?|hrs?|hr|minutes?|mins?|min|seconds?|secs?|sec)\b/i,
     );
   if (timeMention) chips.push(`How long should I cook this?`);
 
   const measureMention =
     stepText &&
     stepText.match(
-      /\b(\d{1,3}(?:\.\d+)?)\s*(tbsp|tsp|cup|cups|oz|ounce|ounces|g|gram|grams|ml|l)\b/i
+      /\b(\d{1,3}(?:\.\d+)?)\s*(tbsp|tsp|cup|cups|oz|ounce|ounces|g|gram|grams|ml|l)\b/i,
     );
   if (measureMention) {
     chips.push(`How much is ${measureMention[0]}?`);
@@ -161,7 +164,7 @@ function AIChefPanel({
 
   const suggestionChips = useMemo(
     () => getSuggestionChips(currentStepText, recipe?.ingredients),
-    [currentStepText, recipe?.ingredients]
+    [currentStepText, recipe?.ingredients],
   );
 
   const send = useCallback(
@@ -194,14 +197,15 @@ function AIChefPanel({
           ...m,
           {
             role: "assistant",
-            content: `I couldn't answer that right now. ${e?.message || ""}`.trim(),
+            content:
+              `I couldn't answer that right now. ${e?.message || ""}`.trim(),
           },
         ]);
       } finally {
         setSending(false);
       }
     },
-    [currentStepIndex, currentStepText, recipe, sending]
+    [currentStepIndex, currentStepText, recipe, sending],
   );
 
   const startMic = useCallback(() => {
@@ -235,7 +239,11 @@ function AIChefPanel({
         onVoiceCommand?.({ type: "next" });
         return;
       }
-      if (lower === "go back" || lower === "previous step" || lower === "back") {
+      if (
+        lower === "go back" ||
+        lower === "previous step" ||
+        lower === "back"
+      ) {
         onVoiceCommand?.({ type: "prev" });
         return;
       }
@@ -353,7 +361,11 @@ export default function CookingModeClient({ recipe, isPro }) {
   const current = steps[idx];
   const currentText = useMemo(() => {
     if (!current) return "";
-    const parts = [current.title, current.instruction, current.tip ? `Tip: ${current.tip}` : ""]
+    const parts = [
+      current.title,
+      current.instruction,
+      current.tip ? `Tip: ${current.tip}` : "",
+    ]
       .filter(Boolean)
       .join("\n\n");
     return parts;
@@ -361,14 +373,14 @@ export default function CookingModeClient({ recipe, isPro }) {
 
   const detectedSeconds = useMemo(
     () => extractDurationSeconds(current?.instruction || currentText),
-    [current?.instruction, currentText]
+    [current?.instruction, currentText],
   );
 
   const speak = useCallback(() => {
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(
-      currentText || current?.instruction || " "
+      currentText || current?.instruction || " ",
     );
     utter.rate = 1;
     utter.pitch = 1;
@@ -380,7 +392,7 @@ export default function CookingModeClient({ recipe, isPro }) {
       const next = clamp(nextIdx, 0, steps.length);
       setIdx(next);
     },
-    [steps.length]
+    [steps.length],
   );
 
   const prev = useCallback(() => go(idx - 1), [go, idx]);
@@ -390,7 +402,8 @@ export default function CookingModeClient({ recipe, isPro }) {
     const onKeyDown = (e) => {
       const target = e.target;
       const tag = target?.tagName?.toLowerCase?.();
-      if (tag === "input" || tag === "textarea" || target?.isContentEditable) return;
+      if (tag === "input" || tag === "textarea" || target?.isContentEditable)
+        return;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         prev();
@@ -462,9 +475,7 @@ export default function CookingModeClient({ recipe, isPro }) {
                 <span>
                   Step {idx + 1} of {steps.length}
                 </span>
-                <span className="text-stone-500">
-                  Use ← / → or Space
-                </span>
+                <span className="text-stone-500">Use ← / → or Space</span>
               </div>
               <div className="mt-2 h-2 border-2 border-stone-200 bg-stone-100 overflow-hidden">
                 <div
@@ -496,7 +507,10 @@ export default function CookingModeClient({ recipe, isPro }) {
                     Cook Again
                   </Button>
                   <Link href="/dashboard">
-                    <Button variant="outline" className="border-2 border-stone-900">
+                    <Button
+                      variant="outline"
+                      className="border-2 border-stone-900"
+                    >
                       Back to Dashboard
                     </Button>
                   </Link>
@@ -521,7 +535,9 @@ export default function CookingModeClient({ recipe, isPro }) {
                   </div>
                 )}
 
-                {detectedSeconds ? <TimerCard seconds={detectedSeconds} /> : null}
+                {detectedSeconds ? (
+                  <TimerCard seconds={detectedSeconds} />
+                ) : null}
 
                 <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex gap-2">
@@ -563,4 +579,3 @@ export default function CookingModeClient({ recipe, isPro }) {
     </div>
   );
 }
-
