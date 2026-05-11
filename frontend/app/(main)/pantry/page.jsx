@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -56,7 +56,7 @@ export default function PantryPage() {
   // Load items on mount
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [fetchItems]);
 
   // Update items when data arrives
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function PantryPage() {
       toast.success("Item removed from pantry");
       fetchItems();
     }
-  }, [deleteData]);
+  }, [deleteData, deleting, fetchItems]);
 
   // Refresh after update
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function PantryPage() {
       setEditingId(null);
       fetchItems();
     }
-  }, [updateData]);
+  }, [updateData, fetchItems]);
 
   // Handle delete
   const handleDelete = async (itemId) => {

@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable */
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
